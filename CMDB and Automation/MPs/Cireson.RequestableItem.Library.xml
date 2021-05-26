@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Manifest>
+    <Identity>
+      <ID>Cireson.RequestableItem.Library</ID>
+      <Version>1.0.0.0</Version>
+    </Identity>
+    <Name>Cireson - Requestable Item - Library</Name>
+    <References>
+      <Reference Alias="Authoring">
+        <ID>Microsoft.EnterpriseManagement.ServiceManager.UI.Authoring</ID>
+        <Version>7.5.0.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="CoreKnowledge">
+        <ID>System.Knowledge.Library</ID>
+        <Version>7.5.0.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="System">
+        <ID>System.Library</ID>
+        <Version>7.5.0.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="SupportingItem">
+        <ID>System.SupportingItem.Library</ID>
+        <Version>7.5.0.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="WorkItem">
+        <ID>System.WorkItem.Library</ID>
+        <Version>7.5.0.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+  <TypeDefinitions>
+    <EntityTypes>
+      <ClassTypes>
+        <ClassType ID="Cireson.RequestableItem" Accessibility="Public" Abstract="false" Base="System!System.ConfigItem" Hosted="false" Singleton="false" Extension="false">
+          <Property ID="ID" Type="string" AutoIncrement="true" Key="true" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" DefaultValue="RI{0}" />
+          <Property ID="Name" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+          <Property ID="Path" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+          <Property ID="AccessGroup" Type="string" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" />
+          <Property ID="Type" Type="enum" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" EnumType="Cireson.RequestableItemTypeEnum" />
+          <Property ID="Status" Type="enum" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" EnumType="Cireson.RequestableItemStatusEnum" />
+          <Property ID="FirstApprover" Type="enum" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" EnumType="Cireson.RequestableItemApproverEnum" />
+          <Property ID="SecondApprover" Type="enum" AutoIncrement="false" Key="false" CaseSensitive="false" MaxLength="256" MinLength="0" Required="false" Scale="0" EnumType="Cireson.RequestableItemApproverEnum" />
+        </ClassType>
+      </ClassTypes>
+      <RelationshipTypes>
+        <RelationshipType ID="Cireson.RequestableItemGivenToUsers" Base="System!System.Reference" Abstract="false" Accessibility="Public">
+          <Source ID="HasRequestedItems" MinCardinality="0" MaxCardinality="2147483647" Type="Cireson.RequestableItem" />
+          <Target ID="GivenToUsers" MinCardinality="0" MaxCardinality="2147483647" Type="System!System.User" />
+        </RelationshipType>
+        <RelationshipType ID="Cireson.RequestableItemHasApprovers" Base="System!System.Reference" Abstract="false" Accessibility="Public">
+          <Source ID="CanApprove" MinCardinality="0" MaxCardinality="2147483647" Type="Cireson.RequestableItem" />
+          <Target ID="HasApprovers" MinCardinality="0" MaxCardinality="2147483647" Type="System!System.User" />
+        </RelationshipType>
+        <RelationshipType ID="Cireson.RequestableItemHasAssociatedCI" Base="System!System.Reference" Abstract="false" Accessibility="Public">
+          <Source ID="AssociatedWithRequestableItem" MinCardinality="0" MaxCardinality="2147483647" Type="Cireson.RequestableItem" />
+          <Target ID="HasAssociatedCI" MinCardinality="0" MaxCardinality="1" Type="System!System.ConfigItem" />
+        </RelationshipType>
+      </RelationshipTypes>
+      <EnumerationTypes>
+        <EnumerationValue ID="Cireson.RequestableItemApproverEnum" Accessibility="Public" Ordinal="0" />
+        <EnumerationValue ID="Cireson.RequestableItemStatusEnum" Accessibility="Public" Ordinal="0" />
+        <EnumerationValue ID="Cireson.RequestableItemTypeEnum" Accessibility="Public" Ordinal="0" />
+      </EnumerationTypes>
+      <TypeProjections>
+        <TypeProjection ID="Cireson.RequestableItem.TypeProjection.Full" Accessibility="Public" Type="Cireson.RequestableItem">
+          <Component Path="$Context/Path[Relationship='WorkItem!System.WorkItemRelatesToConfigItem' SeedRole='Target']$" Alias="ImpactedWorkItem" />
+          <Component Path="$Context/Path[Relationship='WorkItem!System.WorkItemAboutConfigItem' SeedRole='Target']$" Alias="RelatedWorkItem" />
+          <Component Path="$Context/Path[Relationship='SupportingItem!System.ConfigItemHasFileAttachment']$" Alias="FileAttachment" />
+          <Component Path="$Context/Path[Relationship='System!System.ConfigItemRelatesToConfigItem']$" Alias="RelatedConfigItem" />
+          <Component Path="$Context/Path[Relationship='System!System.ConfigItemRelatesToConfigItem' SeedRole='Target']$" Alias="RelatedConfigItemSource" />
+          <Component Path="$Context/Path[Relationship='CoreKnowledge!System.EntityLinksToKnowledgeDocument']$" Alias="RelatedKnowledgeArticles" />
+          <Component Path="$Context/Path[Relationship='Cireson.RequestableItemHasApprovers']$" Alias="Approvers" />
+          <Component Path="$Context/Path[Relationship='Cireson.RequestableItemGivenToUsers']$" Alias="GivenToUsers" />
+          <Component Path="$Context/Path[Relationship='Cireson.RequestableItemHasAssociatedCI']$" Alias="AssociatedCI" />
+        </TypeProjection>
+      </TypeProjections>
+    </EntityTypes>
+  </TypeDefinitions>
+  <Categories>
+    <Category ID="Cireson.RequestableItemApproverEnum.EnumerationViewTasks" Target="Cireson.RequestableItemApproverEnum" Value="Authoring!Microsoft.EnterpriseManagement.ServiceManager.UI.Authoring.EnumerationViewTasks" />
+    <Category ID="Cireson.RequestableItemApproverEnum.VisibleToUser" Target="Cireson.RequestableItemApproverEnum" Value="System!VisibleToUser" />
+    <Category ID="Cireson.RequestableItemStatusEnum.EnumerationViewTasks" Target="Cireson.RequestableItemStatusEnum" Value="Authoring!Microsoft.EnterpriseManagement.ServiceManager.UI.Authoring.EnumerationViewTasks" />
+    <Category ID="Cireson.RequestableItemStatusEnum.VisibleToUser" Target="Cireson.RequestableItemStatusEnum" Value="System!VisibleToUser" />
+    <Category ID="Cireson.RequestableItemTypeEnum.EnumerationViewTasks" Target="Cireson.RequestableItemTypeEnum" Value="Authoring!Microsoft.EnterpriseManagement.ServiceManager.UI.Authoring.EnumerationViewTasks" />
+    <Category ID="Cireson.RequestableItemTypeEnum.VisibleToUser" Target="Cireson.RequestableItemTypeEnum" Value="System!VisibleToUser" />
+  </Categories>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="Cireson.RequestableItem">
+          <Name>Requestable Item</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="ID">
+          <Name>ID</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="Name">
+          <Name>Name</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="Path">
+          <Name>Path</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="AccessGroup">
+          <Name>Access Group</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="Type">
+          <Name>Type</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="Status">
+          <Name>Status</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="FirstApprover">
+          <Name>First Approver</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem" SubElementID="SecondApprover">
+          <Name>Second Approver</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItemApproverEnum">
+          <Name>Requestable Item Approver List</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItemStatusEnum">
+          <Name>Requestable Item Status List</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItemTypeEnum">
+          <Name>Requestable Item Type List</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem.TypeProjection.Full">
+          <Name>Requestable Item Projection (Full)</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItemGivenToUsers">
+          <Name>Requestable Item Given To Users</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItemHasApprovers">
+          <Name>Requestable Item Has Approvers</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItemHasAssociatedCI">
+          <Name>Requestable Item Has Approvers</Name>
+        </DisplayString>
+        <DisplayString ElementID="Cireson.RequestableItem.Library">
+          <Name>Cireson - Requestable Item - Library</Name>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles></KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPack>
